@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список пользователей</title>
+</head>
+<body>
+    <h1>Список пользователей</h1>
+    <table>
+        <tr>
+            <th>Telegram ID</th>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Language Code</th>
+            <th>Is Premium</th>
+            <th>Phone</th>
+        </tr>
+        <tbody id="table-body">
+            <!-- Содержимое заполняется JavaScript -->
+        </tbody>
+    </table>
+
+<script>
+function refreshUsers() {
+    fetch('/get-users')
+    .then(response => response.json())
+    .then(data => {
+        const users = data.users;
+        const tableBody = document.getElementById('table-body');
+        tableBody.innerHTML = ''; // Очистить текущий контент
+
+        // Добавить новые строки в таблицу
+        users.forEach(user => {
+            const row = `<tr>
+                    <td>${user['Telegram ID']}</td>
+                    <td>${user['Username']}</td>
+                    <td>${user['First Name']}</td>
+                    <td>${user['Last Name']}</td>
+                    <td>${user['Language Code']}</td>
+                    <td>${user['Is Premium'] ? 'Yes' : 'No'}</td>
+                    <td>${user['Phone']}</td>
+                 </tr>`;
+            tableBody.innerHTML += row;
+        });
+      });
+}
+
+// Вызовите эту функцию, чтобы обновить пользователей при загрузке страницы
+document.addEventListener('DOMContentLoaded', refreshUsers);
+
+// Вызовите эту функцию, чтобы обновить пользователей периодически (например, каждые 30 секунд)
+setInterval(refreshUsers, 3000);
+</script>
+
+
+</body>
+</html>

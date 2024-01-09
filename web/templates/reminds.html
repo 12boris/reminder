@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список напоминаний</title>
+</head>
+<body>
+    <h1>Список напоминаний</h1>
+    <table>
+        <tr>
+            <th>Telegram ID</th>
+            <th>Задача</th>
+            <th>Тип напоминания</th>
+            <th>Ближайший триггер</th>
+        </tr>
+        <tbody id="reminders-table-body">
+            <!-- Содержимое заполняется JavaScript -->
+        </tbody>
+    </table>
+
+<script>
+function refreshReminders() {
+    fetch('/get-reminders')
+    .then(response => response.json())
+    .then(data => {
+        const reminders = data.reminders;
+        const tableBody = document.getElementById('reminders-table-body');
+        tableBody.innerHTML = ''; // Очистить текущий контент
+
+        // Добавить новые строки в таблицу
+        reminders.forEach(reminder => {
+            const triggerDate = new Date(reminder['nearest_trigger'] * 1000).toLocaleString();
+            const row = `<tr>
+                    <td>${reminder['creator']}</td>
+                    <td>${reminder['task']}</td>
+                    <td>${reminder['remind_type']}</td>
+                    <td>${triggerDate}</td>
+                 </tr>`;
+            tableBody.innerHTML += row;
+        });
+    });
+}
+
+// Вызовите эту функцию, чтобы обновить напоминания при загрузке страницы
+document.addEventListener('DOMContentLoaded', refreshReminders);
+
+// Вызовите эту функцию, чтобы обновить напоминания периодически (например, каждые 3 секунды)
+setInterval(refreshReminders, 3000);
+</script>
+
+</body>
+</html>
